@@ -22,7 +22,9 @@ Here is a video of one online LEGO EV3 omni robot.
 
 https://www.youtube.com/watch?v=VmEzJDlAiNw
 
+You can try this code here.
 
+http://gamereality.se/index.php
 
 
 So any tips?
