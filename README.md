@@ -8,7 +8,7 @@ speltid :  with a number that stands for seconds a person can control a robot
 återbesökare :  with 0 bytes
 
 
-I can not upload the two empty files "error" and "återbesök" so you need to make them your self, to run this project.
+I can not upload the two empty files "error" and "återbesökare" so you need to make them your self, to run this project.
 ----
 
 I get some of it to work.
