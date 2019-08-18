@@ -30,6 +30,9 @@ You can try this code here.
 
 http://gamereality.se/index.php
 
+I have set time to 20 seconds.
+Who does it write out all seconds as a column at left?
+And why does it write our camera options up right? 
 
 So any tips?
 
