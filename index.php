@@ -8,8 +8,11 @@ if(!isset($_COOKIE['queue'])) {$ingen_kökaka = true; setcookie('queue', md5(tim
 
 
 if($_SERVER['QUERY_STRING'] == 'setcoockie') {
-	?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+	?><!DOCTYPE html>
 	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="sv" lang="sv">
+
+	    
+	    
 	<head>
 	<title>GameReality</title>
 	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
@@ -60,9 +63,11 @@ $kötid = $kötid>5? ($kötid >= 120? round($kötid/60).' minuter': ($kötid-4).
 
 header('Content-Type: text/html; charset=utf8');
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="sv" lang="sv">
+?><!DOCTYPE html>
+
+
+
+
 
 
 <head>
@@ -75,7 +80,10 @@ header('Content-Type: text/html; charset=utf8');
 
 <body>
 <div id="top">
-<h1><a href="http://www.gamereality.se" target="_top"><span>GameReality  2019</span></a></h1>
+<h3><a href="http://www.gamereality.se" target="_top"><span>GameReality  2019</span></a></h3>
+
+<a href="http://www.bredbandskoll.net/ip-adress-lank" ><img src="http://www.bredbandskoll.net/ip-adress-gron-2rader-stor.php" border="0" ></a>
+
 <p>Ett dataspel, där ni fjärrstyr riktiga holonomiska/omni kamera-robotar, utrustade med laser-tag vapen, över internet. 
 </p>
 </div>
@@ -132,26 +140,20 @@ header('Content-Type: text/html; charset=utf8');
 <!-- Centrumbilden som visas på platsen för webbkameran --> 
  <div id="scenen">
   <div id="webcamcontainer">
-   <img src="http://www.gamereality.se/images/Ol2gkzL3Tl.gif" alt="Den webbstyrda roboten"  height="442" width="552"/>
+   <img src="http://www.gamereality.se/images/Ol2gkzL3Tl.gif" alt="Den webbstyrda roboten"  height="256" width="320"/>
   </div>
  </div>
 
 
 
-
+<!--
 
 <div style="margin:0 auto;width:640px;padding-top:7px;/*height: 190px;overflow:hidden;border-bottom: solid #aaaaaa 1px;*/">
-	<!-- AddThis Button BEGIN -->
-	<div class="addthis_toolbox addthis_default_style">
-	<a class="addthis_button_facebook">&nbsp;Dela på facebook</a>
-	<span class="addthis_separator">|</span>
+    
 
-	<a href="http://www.addthis.com/bookmark.php?v=250&amp;username=gamereality" class="addthis_button_compact">Dela på fler sätt...</a>
-	<!--
-	<a class="addthis_button_myspace"></a>
-	<a class="addthis_button_google"></a>
-	<a class="addthis_button_twitter"></a>
-	-->
+	
+
+	
 	</div>
 	<script type="text/javascript">
 		addthis_url    = 'http://www.gamereality.se/';   
@@ -182,7 +184,7 @@ header('Content-Type: text/html; charset=utf8');
 
 
 
-
+-->	
 
 
 
@@ -207,7 +209,7 @@ header('Content-Type: text/html; charset=utf8');
  	<div class="errorbox"><b>ETT FEL UPPSTOD!</b>
 	 För att kunna se GameReality här måste tredjepartskakor från GameRealitys server http://<?php echo $_SERVER["SERVER_NAME"];?> tillåtas i webbläsaren!<br/>Ändra inställningarna för kakor och försök igen.</div>
    <?php } ?>
-	<button style="font-weight: bold; padding: 10px;" onclick="window.location.replace('queue.php?new')">Stand in queueu here to a Robot.</button>
+	<button style="font-weight: bold; padding: 10px;" onclick="window.location.replace('queue.php?new')">Stand in queue here to a robot.</button>
 	<br/>Calculated  queue time: <?php echo $kötid; ?>
 	<!-- <div style="width:350px;border:solid black 1px;background-color:#ffffaa;margin:10px auto; text-align:left;padding:4px;">Denna webbsida har testats med gott resultat i alla vanliga nyare webbläsare.<br/>
 	Men om du har en äldre webbläsare så får du gärna lämna en kommentar om hur webbsidan fungerat i den i kommentarsfältet till höger.	
@@ -229,24 +231,8 @@ Får du problem med Internet Explorer så pröva vilken annan webläsare som hel
 
 
 
-
-
-<!-- Centrumbilden som visas på platsen för webbkameran 
-
-<div style="white-space: nowrap; width:100%; overflow:hidden;"><img
-src="http://www.gamereality.se/images/Ol2gkzL3Tl.gif" title="GameReality" alt="GameReality" height="200"/>
-</div>
-
---> 
-
-
 <div id="foot">
-	<p>
-	 GameReality och alla fysiska robotar gjordes av M.Sc. Magnus Ivarsson 
-	<a href="http://www.gamereality.se"><br/>Kontakta GameReality</a>
-	</p>
-
-
+	
    <p><a href="?om_kakor">Denna webbsida använder kakor.</a></p>
 
 </div>
@@ -255,17 +241,4 @@ src="http://www.gamereality.se/images/Ol2gkzL3Tl.gif" title="GameReality" alt="G
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
 
