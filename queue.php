@@ -127,7 +127,7 @@ if($queue_pos==2){ header("Location: spela.php"); exit;}
 //  <object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
 
 list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
-if(!$port) $ip='192.168.1.93';
+if(!$port) $ip='192.168.1.165';
 $kamera_adr = "http://$ip:8088";
 
 function webcamklient($typ) {
@@ -158,8 +158,7 @@ if(isset($_GET['webcamklient'])) { webcamklient($_GET['webcamklient']); exit; }
 
 header('Content-Type: text/html; charset=utf8');
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="sv" lang="sv">
 
 
@@ -173,12 +172,19 @@ header('Content-Type: text/html; charset=utf8');
 
 <body><div id="container">
 <div id="top">
-<h1><a href="http://www.gamereality.se/" target="_top"><span>GameReality 2019</span></a></h1>
+<h1><a href="http://www.gamereality.se/" target="_top">GameReality 2019</a>
+</h1>
+
+
+<a href="http://www.bredbandskoll.net/ip-adress-lank" ><img src="http://www.bredbandskoll.net/ip-adress-gron-2rader-stor.php" border="0" ></a>
+
+
+
 <p> En spelvärld med nya händelser varje dag. Tryck på knapparna W,A,S,D och pilarna höger/vänster och styr roboten.
 </p>
 </div>
 
-
+<!--
 <div style="position:absolute; top: 0; right: 0;border: outset 1px; color:black; background: white;padding:7px;text-align:right;">
 	Problem med bilden?<br/> testa någon av dessa:<br/>
 <input type="image" src="images/MJPG.png" onclick="setWebcam('mjpg');" title="Visa kamerabild som MJPG-bild"/>
@@ -186,7 +192,7 @@ header('Content-Type: text/html; charset=utf8');
 <input type="image" src="images/js.png" onclick="setWebcam('javascript');" title="Använd Javascriptbaserad kameravisning"/>
 </div>
 
-
+-->
 
 
 <div id="scenen">
@@ -199,10 +205,40 @@ header('Content-Type: text/html; charset=utf8');
     <div id="progress"></div>
     <input id="progress_info" value="Var god vänta..."/>
    </div>
-	<button style="float:right;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
+   
+   
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+   
+   
+	<button style="float:left;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
    </div>
   </div>
-  <script type="text/javascript" src="ajax.js"></script>
+  
   <script type="text/JavaScript">/*<![CDATA[*/
 
 var start_time = <?php echo json_encode($starttid); ?>; //Den totala kötiden när köandet började
@@ -213,7 +249,7 @@ progress.style.backgroundPosition = 'left';
 var time = new Date(); //Aktuell tid
 var time_end  = <?php echo $queue[0]-time()+($queue_pos-3)*$speltid; ?>*1000+time.getTime(); //Beräknad tid när spelandet kan börja
 var time_check = time.getTime()+1000; //Nästa gång tiden kollas mot servern
-var infoHttpObj = GetXmlHttpObject();
+var infoHttpObj = new XMLHttpRequest();
 
 var imgCnt = 0; //Bildräknare för unika bilder
 var errT;
@@ -223,7 +259,7 @@ function infoTimer() { //Funkar denna bättre?
 	updateInfo(time_end-time.getTime());
 	if(time.getTime() < time_end+900) {
 	 if(time.getTime() > time_check) {
-	  var infoHttpObj = GetXmlHttpObject();
+	  var infoHttpObj = new XMLHttpRequest();
 	  infoHttpObj.onreadystatechange=server_response;
 	  infoHttpObj.open("GET","queue.php?queue",true);
 	  try {infoHttpObj.send(null);}
@@ -260,7 +296,7 @@ function server_response() { //Denna funktion anropas var gång servern svarar
 
 
 function setWebcam(value) {
-	var http=GetXmlHttpObject();
+	var http = new XMLHttpRequest();
 	http.open('GET', '?webcamklient='+encodeURIComponent(value), false);
 	http.send(null);
 	document.getElementById('webcam').innerHTML = http.responseText;
