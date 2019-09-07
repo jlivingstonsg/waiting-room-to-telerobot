@@ -4,7 +4,7 @@ if(!isset($_COOKIE['queue'])) { header('Location: index.php?check_cookie'); exit
 
 
 list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
-if(!$port) $ip='192.168.1.93';
+if(!$port) $ip='192.168.1.223';
 $kamera_adr = "http://$ip:8088";
 
 function webcamklient($typ) {
@@ -102,8 +102,7 @@ header('Content-Type: text/html; charset=utf8');
 
 
 
-?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="sv" lang="sv">
 
 
@@ -144,6 +143,8 @@ function body_key(e) {
 
 <body onkeydown="body_key(event)"><div id="container">
 <div id="knappanel"></div>
+
+
 <!--
 <?php
 //echo '<iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fvalslaget.se+&amp;layout=standard&amp;show_faces=true&amp;width=450&amp;action=like&amp;colorscheme=light&amp;height=80" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:450px; height:80px;" allowTransparency="true"></iframe>';
@@ -153,14 +154,24 @@ echo '<img id="statusbild" src="images/status.jpg" alt="aktuell status" title="a
 echo '<iframe src="http://www.facebook.com/plugins/likebox.php?id=125097487508475&amp;width=292&amp;connections=10&amp;stream=true&amp;header=true&amp;height=587" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:292px; height:587px;" allowTransparency="true"></iframe>';
 echo '</div>';
 ?>
+
 -->
+
+
 <div id="top">
-<h1><a href="http://www.gamereality.se/" target="_top"><span>GameReality 2019</span></a></h1>
+    
+<h1><a href="http://www.gamereality.se/" target="_top">GameReality 2019</a></h1>
+
+
+
 <p>En spelvärld med nya händelser varje dag. Tryck på knapparna W,A,S,D och pilar höger/vänster och kontrollera roboten.
 </p>
 </div>
 
 
+
+
+<!--
 <div style=" color:black;position:absolute; top: 0; right: 0;border: outset 1px; background: white;padding:7px;text-align:right;">
 	Problem med bilden?<br/> testa någon av dessa:<br/>
 <input type="image" src="images/MJPG.png" onclick="setWebcam('mjpg');" title="Visa kamerabild som MJPG-bild"/>
@@ -169,7 +180,7 @@ echo '</div>';
 </div>
 
 
-
+-->
 
 
 
@@ -212,12 +223,44 @@ echo '</div>';
 	<div id="goright" onclick="send_cmd('go_right');"></div>
 </div>  
   
-<div id="msg1" style="position:absolute; top:485px;height:70px;width:416px;text-align:left;padding:4px;">Var god dröj, robot startas...</div>
-
-
 
   
-  <button style="float:right;clear:right;margin-bottom:5px;" onclick="send_cmd('close'); window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
+<div id="msg1" style="position:absolute; top:485px;height:70px;width:416px;text-align:left;padding:4px;">Var god dröj, robot startas...
+</div>
+
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>  
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+
+ 
+  
+  <button style="float:left;clear:right;margin-bottom:5px;" onclick="send_cmd('close'); window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
+  
+  
+<!-- 
   <div id="luckarea" xonclick="luckoppning(event.target)">
 <?php
 
@@ -233,7 +276,8 @@ echo '</div>';
 		echo '<div class="lukket" style="',$p,'">', $i, '</div> ';
 	}
 ?></div>
-  
+-->  
+
   
 </div>
 
@@ -243,15 +287,6 @@ echo '</div>';
 
 
 
-
-
-
-
-
-
-
-
-  <script type="text/javascript" src="ajax.js"></script>
   <script type="text/JavaScript">/*<![CDATA[*/
 
   var preloadImg = new Image(100,25); 
@@ -279,7 +314,7 @@ progress.style.backgroundPosition = 'right';
 var time = new Date(); //Aktuell tid
 var time_end  = <?php echo $queue[0]-time(); ?>*1000+time.getTime(); //Beräknad tid när spelandet avbryts
 var time_check = time.getTime()+1000; //Nästa gång tiden kollas mot servern
-//var infoHttpObj = GetXmlHttpObject();
+//var infoHttpObj = new XMLHttpRequest();
 
 
 function server_response() { //Denna funktion anropas var gång servern svarar
@@ -309,8 +344,8 @@ function infoTimer() {
 	 if(time.getTime() > time_check) {
 		time_check = time.getTime()+6000;
 	//	alertarea('skall... ', 2000);
-	//var infoHttpObj = GetXmlHttpObject();
-		var infoHttpObj = GetXmlHttpObject();
+	//var infoHttpObj = new XMLHttpRequest();
+		var infoHttpObj = new XMLHttpRequest();
 	  infoHttpObj.onreadystatechange=server_response;
 	  infoHttpObj.open("GET","queue.php?time",true);
 	  try {infoHttpObj.send(null);}
@@ -368,7 +403,7 @@ function debug(obj) {
 
 
 function send_cmd(cmd) {
-	var http = GetXmlHttpObject();
+	var http = new XMLHttpRequest();
 	http.t = new Date().getTime();
 	http.cmd = last_cmd = cmd+'/'+http.t;
 	http.textlength = 0;
@@ -461,12 +496,8 @@ function alertarea(msg, tid) {
 
 
 
-
-
-
-
 function screenshot() { //Inte i bruk för närvarande, men en trevlig funktion var det. Kanske att återinföra igen.
-	var http = GetXmlHttpObject();
+	var http = new XMLHttpRequest();
 	http.open('GET', 'cmd.php/snapshot', true);
 	http.onreadystatechange = function(){
 		if(this.readyState < 4) return;
@@ -477,7 +508,7 @@ function screenshot() { //Inte i bruk för närvarande, men en trevlig funktion 
 
 
 function setWebcam(value) {
-	var http=GetXmlHttpObject();
+	var http = new XMLHttpRequest();
 	http.open('GET', '?webcamklient='+encodeURIComponent(value), false);
 	http.send(null);
 	document.getElementById('webcam').innerHTML = http.responseText;
