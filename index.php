@@ -194,7 +194,7 @@ header('Content-Type: text/html; charset=utf8');
 
 
  <div style="text-align:center;margin: 20px 0 180px;">
-  <?php if(strlen(file_get_contents('status/error'))): ?>
+  <?php if(strlen(trim(file_get_contents('status/error')))): ?>
    <p class="errorbox">
     För närvarande är GameReality avstängd pga tekniskt fel eller underhåll.<br/>
     Välkommen åter om en liten stund
