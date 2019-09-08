@@ -126,30 +126,31 @@ if($queue_pos==2){ header("Location: spela.php"); exit;}
 
 //  <object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
 
-list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
-if(!$port) $ip='192.168.1.165';
-$kamera_adr = "http://$ip:8088";
 
+//list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
+//if(!$port) $ip='192.168.1.223';
+//$kamera_adr = "http://$ip:8088";
+$kamera_adr = "http://".file_get_contents('status/robot_ip').":8088/cam";
 function webcamklient($typ) {
 	global $kamera_adr;
 	switch($typ) {
 		case 'mjpg':
-			echo '<img width="640" height="480" src="',$kamera_adr,'/?action=stream"/>';
+			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
 			break;
-		case 'java':
-			echo '<applet code="com.charliemouse.cambozola.Viewer" archive="',$kamera_adr,'/cambozola.jar" width="640" height="480">',
-						'<param name="url" value="',$kamera_adr,'/?action=stream"/>Test</applet>';
-			break;
-		case 'javascript':
-			echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" src="',$kamera_adr,'/?action=snapshot" ',
-			'onload="clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;nextSibling.style.zIndex=0;nextSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
-			'onerror="restart_webcam()"/>';
-			echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" ', 
-			'onload="clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;this.previousSibling.style.zIndex=0;previousSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
-			'onerror="restart_webcam()"/>';
-			break;
+	//	case 'java':
+	//		echo '<applet code="com.charliemouse.cambozola.Viewer" archive="',$kamera_adr,'/cambozola.jar" width="640" height="480">',
+	//					'<param name="url" value="',$kamera_adr,'/?action=stream"/>Test</applet>';
+	//		break;
+	//	case 'javascript':
+	//		echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" src="',$kamera_adr,'/?action=snapshot" ',
+	//		'onload="if(errT) clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;nextSibling.style.zIndex=0;nextSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
+	//		'onerror="restart_webcam()"/>';
+	//		echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" ', 
+	//		'onload="clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;this.previousSibling.style.zIndex=0;previousSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
+	//		'onerror="restart_webcam()"/>';
+	//		break;
 		default:
-			echo '<img width="640" height="480" src="',$kamera_adr,'/?action=stream"/>';
+			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
 	}
 }
 
