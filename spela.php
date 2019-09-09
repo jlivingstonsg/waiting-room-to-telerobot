@@ -41,7 +41,7 @@ $speltid = file_get_contents('status/speltid');
 $queue = explode("\n", file_get_contents('status/queue')); //Läs in köfilen
 
 
-
+<!--
 $iparray = (array) json_decode(file_get_contents('status/ip_block'));
 $ip_block = isset($iparray[$_SERVER["REMOTE_ADDR"]]) && $iparray[$_SERVER["REMOTE_ADDR"]]>(time()-3600);
 	
@@ -52,7 +52,7 @@ if($ip_block) {
 	fwrite($fh, $_COOKIE["queue"]."\n");
 	fclose($fh);
 }
-
+-->
 
 
 
