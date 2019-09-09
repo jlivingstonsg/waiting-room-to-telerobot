@@ -230,34 +230,7 @@ function body_key(e) {
 <div id="msg1" style="position:absolute; top:485px;height:70px;width:416px;text-align:left;padding:4px;">Var god dröj, robot startas...
 </div>
 
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
 
- 
   
   <button style="float:left;clear:right;margin-bottom:5px;" onclick="send_cmd('close'); window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
   
