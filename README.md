@@ -2,14 +2,6 @@
 This is three files of PHP code that is to put gamers to a camera telerobot in a virtual waitingroom, where they can wait for their turn, to remote control it.
 It also needs a folder named "status" with (what I know now) four files named...
 
-error : with 0 bytes
-ip_block :  containing "{}" 
-speltid :  with a number that stands for seconds a person can control a robot
-återbesökare :  with 0 bytes
-
-
-I can not upload the two empty files "error" and "återbesökare" so you need to make them your self, to run this project.
-----
 
 I get some of it to work.
 Can anybody see why it does not work properly?
