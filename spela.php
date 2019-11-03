@@ -12,7 +12,7 @@ function webcamklient($typ) {
 	global $kamera_adr;
 	switch($typ) {
 		case 'mjpg':
-			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
+			echo '<img width="100%" height="100%" src="',$kamera_adr,'"/>';
 			break;
 	//	case 'java':
 	//		echo '<applet code="com.charliemouse.cambozola.Viewer" archive="',$kamera_adr,'/cambozola.jar" width="640" height="480">',
