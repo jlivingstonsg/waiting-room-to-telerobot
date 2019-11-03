@@ -162,12 +162,14 @@ function body_key(e) {
 
 <div id="top">
     
+<!--	
 <h1><a href="http://www.gamereality.se/" target="_top">GameReality 2019</a></h1>
 
 
 
 <p>En spelvärld med nya händelser varje dag. Tryck på knapparna W,A,S,D och pilar höger/vänster och kontrollera roboten.
 </p>
+-->
 </div>
 
 
