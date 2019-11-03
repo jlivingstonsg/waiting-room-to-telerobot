@@ -448,7 +448,7 @@ function send_cmd(cmd) {
 					//alert('Stängde lucka'+lucka.textContent);
 					break;
 				//default: alertarea('Meddelande '+msg[0]+' har ingen hanterare', 2000);
-				default: alert('['+msg[0]+']');
+				default: console.log(msg);
 			}
 		}
 	}
