@@ -7,8 +7,8 @@ if(!isset($_COOKIE['queue'])) { header('Location: index.php?check_cookie'); exit
 //if(!$port) $ip='192.168.1.223';
 //$kamera_adr = "http://$ip:8088";
 
-$RoboCam_adr = "http://".file_get_contents('status/robot_ip').":8088/";
-$kamera_adr = "http://".file_get_contents('status/robot_ip').":8088/cam";
+$RoboCam_adr = "http://".trim(file_get_contents('status/robot_ip')).":8088/";
+$kamera_adr = "http://".trim(file_get_contents('status/robot_ip')).":8088/cam";
 
 function webcamklient($typ) {
 	global $kamera_adr;
