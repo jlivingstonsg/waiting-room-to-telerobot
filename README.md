@@ -16,9 +16,9 @@ with a webcam.
 
 Here is a video of one online LEGO EV3 omni robot.
 
-https://www.youtube.com/watch?v=VmEzJDlAiNw
+https://www.youtube.com/watch?v=TZ4ujKcy87o
 
-You can try this code here.
+You can try the code here.
 
 http://robot1.gamereality.se/index.php
 
