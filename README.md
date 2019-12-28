@@ -1,8 +1,7 @@
 # waiting-room-to-telerobot
-This is three files of PHP code that is to put gamers to a camera telerobot in a virtual waitingroom, where they can wait for their turn, to remote control it.
-It also needs a folder named "status" with (what I know now) four files named...
-
-
+This is PHP code that is to put gamers to a camera telerobot in a virtual waitingroom, where they can wait for their turn, to remote control it.
+It is to be used with a android app called RoboCam.
+https://play.google.com/store/apps/details?id=ru.proghouse.robocam&hl=en_US
 I get some of it to work.
 Can anybody see why it does not work properly?
 
