@@ -1,45 +1,8 @@
 <?php
-
-//Lite underhåll av kön
-
-session_start(); //Använd sessions
+//session_start(); //Använd sessions
 header('Cache-Control: no-cache');
-if(!isset($_COOKIE['queue'])) {$ingen_kökaka = true; setcookie('queue', md5(time()));}
-
-
-if($_SERVER['QUERY_STRING'] == 'setcoockie') {
-	?><!DOCTYPE html>
-	<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="sv" lang="sv">
-
-	    
-	    
-	<head>
-	<title>GameReality</title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-	</head>
-	<body style="background-color: yellow; color: black;"><p>
-	<script type="text/JavaScript">/*<![CDATA[*/
-		if (document.cookie.indexOf("queue=") == -1) {
-			document.write('Du måste ändra inställningarna så kakor tillåts, om du vill se GameReality.');
-		
-		}
-		else {
-			window.opener.document.getElementById('kakfel').style.display = 'none';
-			window.close();
-		}
-	  /*]]>*/</script>
-	  </p><p style="text-align:center;"><button onclick="window.close()">Stäng</button></p>
-	</body>
-	</html>	
-	<?php
-	exit;
-}
-
-
-
-
-$queue = explode("\n", file_get_contents('status/queue')); //Läs in köfilen
 $speltid = file_get_contents('status/speltid');
+$queue = explode("\n", file_get_contents('status/queue')); //Läs in köfilen
 if(!$queue[1]) {//Om aktuell spelare inte aktiverat sig
  if(isset($queue[2]) && $queue[2]==$_COOKIE['queue']) {
 	$queue[1]=true;
@@ -47,7 +10,6 @@ if(!$queue[1]) {//Om aktuell spelare inte aktiverat sig
  }
  elseif($queue[0] < time()+$speltid-5) $queue[0] = 0; //Om spelaren som står på tur inte varit aktiv inom 5 sek så kastas hen ut i nedanstående
 }
-
 if($queue[0] <= time()) { //Uppdatera kön ifall tiden har förflutit
 	unset($queue[2]);
 	$queue = array_values($queue);
@@ -55,190 +17,236 @@ if($queue[0] <= time()) { //Uppdatera kön ifall tiden har förflutit
 	$queue[0] = time()+$speltid;
 	file_put_contents('status/queue', implode("\n", $queue));
 }
-
-
-
-$kötid = (count($queue)-3)*$speltid + $queue[0] - time();
-$kötid = $kötid>5? ($kötid >= 120? round($kötid/60).' minuter': ($kötid-4).' sekunder'): 'Ingen';
-
+$queue_pos = array_search($_COOKIE['queue'], $queue, true); //1=Aktuell spelare, 2=nästkommande spelare ..., false=Inte i kön
+$wait = $queue_pos > 2? $queue[0]-time()+($queue_pos-3)*$speltid: 0;
+if(isset($_SERVER['QUERY_STRING'])) switch($_SERVER['QUERY_STRING']) {
+ case 'queue': echo $wait; exit;
+ case 'time': echo isset($queue[2]) && $queue[2]==$_COOKIE['queue'] && $queue[0]>time()? $queue[0]-time(): 0; exit;
+ 
+ case 'exit':
+	if($queue_pos) {
+	 unset($queue[$queue_pos]);
+	 if($queue_pos == 2) {$queue[0]=time()+$speltid+4; $queue[1]=0;} //Nästa spelare får lite extratid, eftersom hen får börja oväntat
+	 file_put_contents('status/queue', implode("\n", $queue));
+	}
+	header("Location: index.php");
+	exit;
+ case 'new':
+	if($queue_pos) {
+	 unset($queue[$queue_pos]);
+	 $queue = array_values($queue);
+	 if($queue_pos == 2) {$queue[0]=time()+$speltid+4; $queue[1]=0;} //Nästa spelare får lite extratid, eftersom hen får börja oväntat
+	 $queue_pos = false;
+	}
+/*
+	$queue_pos = count($queue);
+	setcookie('queue', $queue[]=md5(microtime()));
+	setcookie('queueStart', $wait = $queue[0]-time()+($queue_pos-3)*$speltid);
+	file_put_contents('status/queue', implode("\n", $queue));
+	header("Location: queue.php");
+	exit;
+*/
+	if(!isset($_COOKIE['queue'])) setcookie('queue', md5(microtime()));
+	header("Location: queue.php?new2");
+	exit;
+	
+ case 'new2':
+	if($queue_pos) {
+		// Här måste något vara fel...
+		header("Location: queue.php"); //Minst dåliga åtgärden?
+		exit;
+	}
+	elseif(!isset($_COOKIE['queue'])) { header('Location: index.php?check_cookie'); exit; }
+	$queue_pos = count($queue);
+	if($queue_pos > 6) { header('Location: index.php?queue_full'); exit; }
+	$queue[] = $_COOKIE['queue'];
+	setcookie('queueStart', $wait = $queue[0]-time()+($queue_pos-3)*$speltid);
+	file_put_contents('status/queue', implode("\n", $queue));
+	header("Location: queue.php");
+	exit;
+	
+	
+	
+	
+}
+if(!isset($_COOKIE['queue'])) { header('Location: index.php?check_cookie'); exit; }
+if(!$queue_pos) { //Se till att spelaren finns i kön
+	// Om man kommer hit så har något gått fel...
+	header("Location: queue.php?new");
+	exit;
+//	$queue_pos = count($queue);
+//	$kölapp =  md5(time());
+//	setcookie('queue', $kölapp);}
+//	$queue[]=$kölapp;
+//	file_put_contents('status/queue', implode("\n", $queue));
+	//$_SESSION['start_time'] = $wait = $queue[0]-time()+($queue_pos-3)*$speltid;
+//	setcookie('queueStart', $wait = $queue[0]-time()+($queue_pos-3)*$speltid);
+	
+}
+//if($queue_pos==2){ echo 'först i kön. hoppar till spela.php'; exit;}
+$starttid = $_COOKIE['queueStart']? $_COOKIE['queueStart']: $wait;
+if($queue_pos==2){ header("Location: spela.php"); exit;}
+// Sniffa browser:
+ preg_match('/Chrome\/(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $chrome = (float) $d[1];
+ preg_match('/Opera[\/\s](\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $opera = (float) $d[1];
+ preg_match('/Gecko\/(\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $gecko = (int) $d[1];
+ if(!$opera) { preg_match('/MSIE\s(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $msie = (float) $d[1]; }
+ preg_match('/Safari\/(\d+(\.\d+)?)/', $_SERVER['HTTP_USER_AGENT'], $d); $safari = (float) $d[1];
+ preg_match('/Konqueror\/(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $konqueror = (float) $d[1];
+ preg_match('/AppleWebKit\/(\d+(\.\d+)?)/', $_SERVER['HTTP_USER_AGENT'], $d); $awk = (float) $d[1]; //bättre än safari enligt flera källor
+ preg_match('/KHTML\/(\d+(\.\d+)?)/', $_SERVER['HTTP_USER_AGENT'], $d); $khtml = (float) $d[1];
+//  <object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
+//list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
+//if(!$port) $ip='192.168.1.223';
+//$kamera_adr = "http://$ip:8088";
+$kamera_adr = "http://".file_get_contents('status/robot_ip').":8088/cam";
+function webcamklient($typ) {
+	global $kamera_adr;
+	switch($typ) {
+		case 'mjpg':
+			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
+			break;
+	//	case 'java':
+	//		echo '<applet code="com.charliemouse.cambozola.Viewer" archive="',$kamera_adr,'/cambozola.jar" width="640" height="480">',
+	//					'<param name="url" value="',$kamera_adr,'/?action=stream"/>Test</applet>';
+	//		break;
+	//	case 'javascript':
+	//		echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" src="',$kamera_adr,'/?action=snapshot" ',
+	//		'onload="if(errT) clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;nextSibling.style.zIndex=0;nextSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
+	//		'onerror="restart_webcam()"/>';
+	//		echo '<img style="position:absolute;left:0px;top:0px;" width="640" height="480" ', 
+	//		'onload="clearTimeout(errT); errT = setTimeout(restart_webcam,1000); this.style.zIndex=1;this.previousSibling.style.zIndex=0;previousSibling.src=\'',$kamera_adr,'/?action=snapshot&amp;f=\'+imgCnt++" ',
+	//		'onerror="restart_webcam()"/>';
+	//		break;
+		default:
+			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
+	}
+}
+if(isset($_GET['webcamklient'])) { webcamklient($_GET['webcamklient']); exit; }
 header('Content-Type: text/html; charset=utf8');
-
 ?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="sv" lang="sv">
 
 
-
-
-
-
-<head>
-	<title>GameReality </title>
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
-   <meta name="description" content="GameReality. Ett spel där ni fjärrstyr riktiga holonomiska/omni kamera-robotar, utrustade med laser-tag vapen, över internet." />
-   <meta name="keywords" content="GameReality, M.Sc. Magnus Ivarsson" />
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>GameReality</title>
+   <meta name="description" content="GameReality. A real world game environment with new events every day. Press keys  W,A,S,D and arrows right/left to control the robot." />
+	
+	<meta name="generator" content="Geany 0.18" />
 	<link href="style.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
 
-<body>
+<body><div id="container">
 <div id="top">
-<h3><a href="http://www.gamereality.se" target="_top"><span>GameReality  2019</span></a></h3>
+<h1><a href="http://www.gamereality.se/" target="_top">GameReality 2019</a>
+</h1>
+
 
 <a href="http://www.bredbandskoll.net/ip-adress-lank" ><img src="http://www.bredbandskoll.net/ip-adress-gron-2rader-stor.php" border="0" ></a>
 
-<p>Ett dataspel, där ni fjärrstyr riktiga holonomiska/omni kamera-robotar, utrustade med laser-tag vapen, över internet. 
+
+
+<p> A real world game environment with new events every day. Press keys  W,A,S,D and arrows right/left to control the robot.
 </p>
 </div>
- 
-  <?php if(isset($_GET['om_kakor'])): ?>
-   <div style="max-width: 800px; margin: 0 auto 20px;">
-   <h2>Om kakor</h2>
-  
-   <p>Enligt lagen om alltings tillkrånglande (lagen om elektronisk kommunikation 2003:389 18§), 
-  som trädde i kraft den 25 juli 2003, ska alla som besöker en webbplats med kakor 
-  få information om vad en kaka är. Så därför, laglydiga 
-  som vi är, har vi samlat ihop lite info om saken.</p>
-  
-  <p> En kaka är en liten textfil som webbplatsen du besöker sparar på 
-  din dator. Kakor används på många webbplatser för att 
-  ge en besökare tillgång till olika funktioner. Informationen i kakan 
-  är möjlig att använda för att följa en användares 
-  surfande.</p>
-
-  <p>Det finns två typer av kakor. Den ena typen sparar en fil under en längre 
-  tid på din dator. Den används till exempel vid funktioner som talar 
-  om vad som är nytt sedan användaren senast besökte den aktuella 
-  webplatsen. Den andra typen av kakor kallas sessionskakor. Under tiden du 
-  är inne och surfar på en sida, lagras den här kakan temporärt 
-  i din dators minne exempelvis för att hålla reda på vilket 
-  språk du har valt. Sessionskakor lagras inte under en längre tid 
-  på din dator, utan försvinner när du stänger din webbläsare.</p> 
-
-  <p>Denna GameReality använder sig av den senare typen av kakor för att hålla
-  reda på vem som står på tur att spela. 
-  Kakan som sparas är bara en vanlig textfil med lite bokstäver och 
-  några siffror. Den kan på inget sätt ge oss info om din dator (sådant tar vi reda på annat sätt) eller användas för att spåra vilka politiker du valt.
-  Skulle du mot förmodan vilja stoppa denna kaka så får du titta i din webbläsares 
-  manual hur man gör. Men då får du tyvärr inte vara med och spela.</p>
-
-  <p>Observera att det är själva GameRealityservern med adressen http://<?php echo $_SERVER["SERVER_NAME"];?>
-  som sparar kakorna.</p>
-
-  <p> För att få veta mer om vad en kaka är och hur lagen ser ut besök <a href="http://www.pts.se/sv/Regler/Lagar/Lag-om-elektronisk-kommunikation/Cookies-kakor/#Vad%20%C3%A4r%20en%20cookie" target="_blank">Post 
-  &amp; Telestyrelsens hemsida om kakor</a><br/>
-  Men innan du fördjupar dig i texterna där vill jag påpeka att de risker som 
-  där uppges finnas med kakor i ännu högre grad gäller andra tekniker som inte 
-  omfattas av lagen om alltings tillkrånglande.</p>
-
-
-   </div>
- 
-  <?php endif; ?> 
-
- 
- 
- 
- 
-<!-- Centrumbilden som visas på platsen för webbkameran --> 
- <div id="scenen">
-  <div id="webcamcontainer">
-   <img src="http://www.gamereality.se/images/Ol2gkzL3Tl.gif" alt="Den webbstyrda roboten"  height="256" width="320"/>
-  </div>
- </div>
-
-
 
 <!--
-
-<div style="margin:0 auto;width:640px;padding-top:7px;/*height: 190px;overflow:hidden;border-bottom: solid #aaaaaa 1px;*/">
-    
-
-	
-
-	
-	</div>
-	<script type="text/javascript">
-		addthis_url    = 'http://www.gamereality.se/';   
-		addthis_title  = ' GameReality 2019';  
-		addthis_pub    = 'gamereality';
-		
-		
-		//Kolla ifall kakan blev satt:
-		var errorbox;
-		if (document.cookie.indexOf("queue=") == -1) {
-			document.write('<p class="errorbox" id="kakfel">GameReality kunde inte sätta en nödvändig kaka.<br/><button onclick="trysetcoockie()">Gör ett nytt försök...</button></p>');
-			
-
-		}
-		function trysetcoockie() {
-			var w = 450; 
-			var win = window.open('?setcoockie','','status=no,height=120,width='+w+',resizable=yes,left='+(window.screen.width-w)/2
-			+ ',top=360,location=no,directories=no,menubar=no,toolbar=no,scrollbars=yes');
-			
-		}
-		
-		
-    </script>
-	<script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#username=gamereality"></script>
-
-	<!-- AddThis Button END -->
+<div style="position:absolute; top: 0; right: 0;border: outset 1px; color:black; background: white;padding:7px;text-align:right;">
+	Problem med bilden?<br/> testa någon av dessa:<br/>
+<input type="image" src="images/MJPG.png" onclick="setWebcam('mjpg');" title="Visa kamerabild som MJPG-bild"/>
+<input type="image" src="images/Duke.png" onclick="setWebcam('java');" title="Använd Javabaserad kameravisning"/>
+<input type="image" src="images/js.png" onclick="setWebcam('javascript');" title="Använd Javascriptbaserad kameravisning"/>
 </div>
+-->
 
 
-
--->	
-
+<div id="scenen">
 
 
+<div id="webcamcontainer">
+<div id="webcam"><?php webcamklient($gecko>0? 'mjpg': 'javascript'); ?></div>
 
+   <div id="progress_frame">
+    <div id="progress"></div>
+    <input id="progress_info" value="Var god vänta..."/>
+   </div>
+   
+   
+<br>
 
-
-
-
- <div style="text-align:center;margin: 20px 0 180px;">
-  <?php if(strlen(trim(file_get_contents('status/error')))): ?>
-   <p class="errorbox">
-    För närvarande är GameReality avstängd pga tekniskt fel eller underhåll.<br/>
-    Välkommen åter om en liten stund
-   </p>
-  <?php elseif(isset($_GET['queue_full'])): ?>
-   <p class="errorbox">
-    För närvarande är det många som väntar på att få besöka GameReality.<br/>
-    Välkommen åter om en liten stund
-   </p>
-  <?php else: ?>
-   <?php if(isset($_GET['check_cookie']) && $ingen_kökaka) { ?>
- 	<div class="errorbox"><b>ETT FEL UPPSTOD!</b>
-	 För att kunna se GameReality här måste tredjepartskakor från GameRealitys server http://<?php echo $_SERVER["SERVER_NAME"];?> tillåtas i webbläsaren!<br/>Ändra inställningarna för kakor och försök igen.</div>
-   <?php } ?>
-	<button style="font-weight: bold; padding: 10px;" onclick="window.location.replace('queue.php?new')">Stand in queue here to a robot.</button>
-	<br/>Calculated  queue time: <?php echo $kötid; ?>
-	<!-- <div style="width:350px;border:solid black 1px;background-color:#ffffaa;margin:10px auto; text-align:left;padding:4px;">Denna webbsida har testats med gott resultat i alla vanliga nyare webbläsare.<br/>
-	Men om du har en äldre webbläsare så får du gärna lämna en kommentar om hur webbsidan fungerat i den i kommentarsfältet till höger.	
-	 </div> -->
-  <?php endif; 
-	preg_match('/Opera[\/\s](\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $opera = (float) $d[1];
-	if(!$opera) { preg_match('/MSIE\s(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $msie = (float) $d[1]; }
-	if($msie): ?>
-	<p class="errorbox">
-Just nu verkar Internet Explorer inte vara helt kompatibel med GameReality.
-Får du problem med Internet Explorer så pröva vilken annan webläsare som helst:<br/> 
-	<a href="http://www.mozilla.com/en-US/firefox/all.html?lang-search=svenska">Mozilla Firefox</a> <br/> 
-	<a href="http://www.google.com/chrome">Google Chrome</a><br/> 
-	<a href="http://www.apple.com/safari/download/">Apple Safari</a><br/> 
-	<a href="http://www.opera.com/browser/download/">Opera</a> 	
-	</p>
-  <?php endif; ?>
- </div>
-
-
-
-<div id="foot">
-	
-   <p><a href="?om_kakor">Denna webbsida använder kakor.</a></p>
-
-</div>
-
-
-
-</body>
+   
+	<button style="float:left;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
+   </div>
+  </div>
+  
+  <script type="text/JavaScript">/*<![CDATA[*/
+var start_time = <?php echo json_encode($starttid); ?>; //Den totala kötiden när köandet började
+var progress = document.getElementById("progress");
+var progress_info = document.getElementById("progress_info");
+progress.style.left = '0'; 
+progress.style.backgroundPosition = 'left'; 
+var time = new Date(); //Aktuell tid
+var time_end  = <?php echo $queue[0]-time()+($queue_pos-3)*$speltid; ?>*1000+time.getTime(); //Beräknad tid när spelandet kan börja
+var time_check = time.getTime()+1000; //Nästa gång tiden kollas mot servern
+var infoHttpObj = new XMLHttpRequest();
+var imgCnt = 0; //Bildräknare för unika bilder
+var errT;
+function infoTimer() { //Funkar denna bättre?
+	time = new Date();
+	updateInfo(time_end-time.getTime());
+	if(time.getTime() < time_end+900) {
+	 if(time.getTime() > time_check) {
+	  var infoHttpObj = new XMLHttpRequest();
+	  infoHttpObj.onreadystatechange=server_response;
+	  infoHttpObj.open("GET","queue.php?queue",true);
+	  try {infoHttpObj.send(null);}
+	  catch(e){}
+	 }
+	 setTimeout("infoTimer()",300); //uppdatera tidräknaren igen om 300ms
+	}
+	else window.location.href="spela.php"; //Klockan har nått 0
+}
+infoTimer(); //Starta loopen
+function server_response() { //Denna funktion anropas var gång servern svarar
+	if (this.readyState==4){
+	 if(this.responseText.match(/^\d+$/)) {
+	  if(this.responseText*1) {
+	   var d = this.responseText*1000+time.getTime()-time_end;
+	   if(d > -50000000 && d < 500000) time_end += d; //Tillåt inga extremdiffar
+	   time_check = Math.min(time.getTime()+4000, time_end);
+	  }
+	  else {
+	   updateInfo(0);
+	   time_end=time.getTime();
+	   window.location.href="spela.php";
+	  }
+	 }
+	}
+}
+function setWebcam(value) {
+	var http = new XMLHttpRequest();
+	http.open('GET', '?webcamklient='+encodeURIComponent(value), false);
+	http.send(null);
+	document.getElementById('webcam').innerHTML = http.responseText;
+}
+function restart_webcam() {
+	var img = document.getElementById('webcam').getElementsByTagName('img');
+	img[0].src="<?php echo $kamera_adr; ?>/?action=snapshot&f="+imgCnt++;
+}
+function updateInfo(tid) {
+ 	if(tid < 0) tid =0;
+	if(tid > 0) {
+	progress.style.width = (124-0.123*tid/start_time)+'px';
+	tid = Math.round(tid/1000);
+	var enh=' sek';
+	if(tid > 90) {
+	 enh=' min';
+	 tid = Math.round(tid/60);
+	}
+	progress_info.value = 'Max '+tid+enh+' queue';
+	}
+	//else window.location.href="tackochhej.php";
+}
+  /*]]>*/</script>
+ </body>
 </html>
-
