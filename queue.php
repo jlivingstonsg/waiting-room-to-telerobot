@@ -1,13 +1,8 @@
 <?php
-
-
 //session_start(); //Använd sessions
 header('Cache-Control: no-cache');
-
-
 $speltid = file_get_contents('status/speltid');
 $queue = explode("\n", file_get_contents('status/queue')); //Läs in köfilen
-
 if(!$queue[1]) {//Om aktuell spelare inte aktiverat sig
  if(isset($queue[2]) && $queue[2]==$_COOKIE['queue']) {
 	$queue[1]=true;
@@ -15,7 +10,6 @@ if(!$queue[1]) {//Om aktuell spelare inte aktiverat sig
  }
  elseif($queue[0] < time()+$speltid-5) $queue[0] = 0; //Om spelaren som står på tur inte varit aktiv inom 5 sek så kastas hen ut i nedanstående
 }
-
 if($queue[0] <= time()) { //Uppdatera kön ifall tiden har förflutit
 	unset($queue[2]);
 	$queue = array_values($queue);
@@ -23,20 +17,11 @@ if($queue[0] <= time()) { //Uppdatera kön ifall tiden har förflutit
 	$queue[0] = time()+$speltid;
 	file_put_contents('status/queue', implode("\n", $queue));
 }
-
 $queue_pos = array_search($_COOKIE['queue'], $queue, true); //1=Aktuell spelare, 2=nästkommande spelare ..., false=Inte i kön
-
-
-
-
 $wait = $queue_pos > 2? $queue[0]-time()+($queue_pos-3)*$speltid: 0;
-
-
-
 if(isset($_SERVER['QUERY_STRING'])) switch($_SERVER['QUERY_STRING']) {
  case 'queue': echo $wait; exit;
  case 'time': echo isset($queue[2]) && $queue[2]==$_COOKIE['queue'] && $queue[0]>time()? $queue[0]-time(): 0; exit;
-
  
  case 'exit':
 	if($queue_pos) {
@@ -53,7 +38,6 @@ if(isset($_SERVER['QUERY_STRING'])) switch($_SERVER['QUERY_STRING']) {
 	 if($queue_pos == 2) {$queue[0]=time()+$speltid+4; $queue[1]=0;} //Nästa spelare får lite extratid, eftersom hen får börja oväntat
 	 $queue_pos = false;
 	}
-
 /*
 	$queue_pos = count($queue);
 	setcookie('queue', $queue[]=md5(microtime()));
@@ -62,7 +46,6 @@ if(isset($_SERVER['QUERY_STRING'])) switch($_SERVER['QUERY_STRING']) {
 	header("Location: queue.php");
 	exit;
 */
-
 	if(!isset($_COOKIE['queue'])) setcookie('queue', md5(microtime()));
 	header("Location: queue.php?new2");
 	exit;
@@ -86,16 +69,11 @@ if(isset($_SERVER['QUERY_STRING'])) switch($_SERVER['QUERY_STRING']) {
 	
 	
 }
-
-
 if(!isset($_COOKIE['queue'])) { header('Location: index.php?check_cookie'); exit; }
-
-
 if(!$queue_pos) { //Se till att spelaren finns i kön
 	// Om man kommer hit så har något gått fel...
 	header("Location: queue.php?new");
 	exit;
-
 //	$queue_pos = count($queue);
 //	$kölapp =  md5(time());
 //	setcookie('queue', $kölapp);}
@@ -105,15 +83,9 @@ if(!$queue_pos) { //Se till att spelaren finns i kön
 //	setcookie('queueStart', $wait = $queue[0]-time()+($queue_pos-3)*$speltid);
 	
 }
-
 //if($queue_pos==2){ echo 'först i kön. hoppar till spela.php'; exit;}
-
 $starttid = $_COOKIE['queueStart']? $_COOKIE['queueStart']: $wait;
-
-
-
 if($queue_pos==2){ header("Location: spela.php"); exit;}
-
 // Sniffa browser:
  preg_match('/Chrome\/(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $chrome = (float) $d[1];
  preg_match('/Opera[\/\s](\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $opera = (float) $d[1];
@@ -123,10 +95,7 @@ if($queue_pos==2){ header("Location: spela.php"); exit;}
  preg_match('/Konqueror\/(\d+\.\d+)/', $_SERVER['HTTP_USER_AGENT'], $d); $konqueror = (float) $d[1];
  preg_match('/AppleWebKit\/(\d+(\.\d+)?)/', $_SERVER['HTTP_USER_AGENT'], $d); $awk = (float) $d[1]; //bättre än safari enligt flera källor
  preg_match('/KHTML\/(\d+(\.\d+)?)/', $_SERVER['HTTP_USER_AGENT'], $d); $khtml = (float) $d[1];
-
 //  <object width="640" height="505"><param name="movie" value="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE"></param><param name="allowFullScreen" value="true"></param><param name="allowscriptaccess" value="always"></param><embed src="http://www.youtube.com/v/U7kpkbL6vQE?fs=1&amp;hl=sv_SE" type="application/x-shockwave-flash" allowscriptaccess="always" allowfullscreen="true" width="640" height="505"></embed></object>
-
-
 //list($ip, $port) = explode(':', $_SERVER['SERVER_NAME']);
 //if(!$port) $ip='192.168.1.223';
 //$kamera_adr = "http://$ip:8088";
@@ -153,20 +122,16 @@ function webcamklient($typ) {
 			echo '<img width="640" height="480" src="',$kamera_adr,'"/>';
 	}
 }
-
 if(isset($_GET['webcamklient'])) { webcamklient($_GET['webcamklient']); exit; }
-
-
 header('Content-Type: text/html; charset=utf8');
-
 ?><!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:fb="http://www.facebook.com/2008/fbml" xml:lang="sv" lang="sv">
 
 
-<head>
+<head><meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>GameReality</title>
-   <meta name="description" content="GameReality. En spelvärld med nya händelser varje dag. Tryck på knapparna W,A,S,D och pilarna höger/vänster och styr roboten." />
-	<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+   <meta name="description" content="GameReality. A real world game environment with new events every day. Press keys  W,A,S,D and arrows right/left to control the robot." />
+	
 	<meta name="generator" content="Geany 0.18" />
 	<link href="style.css" media="screen" rel="stylesheet" type="text/css" />
 </head>
@@ -181,7 +146,7 @@ header('Content-Type: text/html; charset=utf8');
 
 
 
-<p> En spelvärld med nya händelser varje dag. Tryck på knapparna W,A,S,D och pilarna höger/vänster och styr roboten.
+<p> A real world game environment with new events every day. Press keys  W,A,S,D and arrows right/left to control the robot.
 </p>
 </div>
 
@@ -192,7 +157,6 @@ header('Content-Type: text/html; charset=utf8');
 <input type="image" src="images/Duke.png" onclick="setWebcam('java');" title="Använd Javabaserad kameravisning"/>
 <input type="image" src="images/js.png" onclick="setWebcam('javascript');" title="Använd Javascriptbaserad kameravisning"/>
 </div>
-
 -->
 
 
@@ -209,39 +173,13 @@ header('Content-Type: text/html; charset=utf8');
    
    
 <br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>  
-<br>
-<br>
-<br>
-<br>
-<br>
-<br>
-   
+
    
 	<button style="float:left;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
    </div>
   </div>
   
   <script type="text/JavaScript">/*<![CDATA[*/
-
 var start_time = <?php echo json_encode($starttid); ?>; //Den totala kötiden när köandet började
 var progress = document.getElementById("progress");
 var progress_info = document.getElementById("progress_info");
@@ -251,10 +189,8 @@ var time = new Date(); //Aktuell tid
 var time_end  = <?php echo $queue[0]-time()+($queue_pos-3)*$speltid; ?>*1000+time.getTime(); //Beräknad tid när spelandet kan börja
 var time_check = time.getTime()+1000; //Nästa gång tiden kollas mot servern
 var infoHttpObj = new XMLHttpRequest();
-
 var imgCnt = 0; //Bildräknare för unika bilder
 var errT;
-
 function infoTimer() { //Funkar denna bättre?
 	time = new Date();
 	updateInfo(time_end-time.getTime());
@@ -270,13 +206,7 @@ function infoTimer() { //Funkar denna bättre?
 	}
 	else window.location.href="spela.php"; //Klockan har nått 0
 }
-
-
-
-
 infoTimer(); //Starta loopen
-
-
 function server_response() { //Denna funktion anropas var gång servern svarar
 	if (this.readyState==4){
 	 if(this.responseText.match(/^\d+$/)) {
@@ -293,21 +223,16 @@ function server_response() { //Denna funktion anropas var gång servern svarar
 	 }
 	}
 }
-
-
-
 function setWebcam(value) {
 	var http = new XMLHttpRequest();
 	http.open('GET', '?webcamklient='+encodeURIComponent(value), false);
 	http.send(null);
 	document.getElementById('webcam').innerHTML = http.responseText;
 }
-
 function restart_webcam() {
 	var img = document.getElementById('webcam').getElementsByTagName('img');
 	img[0].src="<?php echo $kamera_adr; ?>/?action=snapshot&f="+imgCnt++;
 }
-
 function updateInfo(tid) {
  	if(tid < 0) tid =0;
 	if(tid > 0) {
@@ -318,14 +243,10 @@ function updateInfo(tid) {
 	 enh=' min';
 	 tid = Math.round(tid/60);
 	}
-	progress_info.value = 'Max '+tid+enh+' kö';
+	progress_info.value = 'Max '+tid+enh+' queue';
 	}
 	//else window.location.href="tackochhej.php";
 }
-
   /*]]>*/</script>
  </body>
 </html>
-
-
-
