@@ -7,7 +7,8 @@ The queue system is now working and video-stream but only in firefox browser.
 
 The RoboCam app creates a IP adress that make you able to control it over the internet with live videostream.
 
-----My problem now is get the control code from the generated IP adress from RoboCam to the PHP queue file that is called spela.php .---
+----My problem now is get the control code (from the generated IP adress from RoboCam) 
+to the PHP queue file that is called spela.php .---
 
 
 The code is about ten years old and was running on a debian linux server called FoxBoard.
