@@ -94,6 +94,10 @@ function body_key(e) {
 		case 32: send_cmd('go_fwd'); e.preventDefault(); return false;
 		case 38: send_cmd('go_fwd'); e.preventDefault(); return false;
 		case 40: send_cmd('go_back'); e.preventDefault(); return false;
+		case 87: send_cmd('go_fwd'); e.preventDefault(); return false;
+		case 83: send_cmd('go_back'); e.preventDefault(); return false;
+		case 68: send_cmd('go_right'); e.preventDefault(); return false;
+		case 65: send_cmd('go_left'); e.preventDefault(); return false;			
 		default:  break;
 		
 	}
