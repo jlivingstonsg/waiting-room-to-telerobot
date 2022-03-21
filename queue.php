@@ -175,7 +175,7 @@ header('Content-Type: text/html; charset=utf8');
 <br>
 
    
-	<button style="float:left;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Avbryt</button>
+	<button style="float:left;clear:right;" onclick="window.location.href='queue.php?exit'" style="border-color:red;">Stop</button>
    </div>
   </div>
   
