@@ -27,6 +27,9 @@ http://robot1.gamereality.se/index.php
 
 I have set the game time to 10 minuts.
 
+I tried to set up the code on github pages here.
+https://jlivingstonsg.github.io/waiting-room-to-telerobot/
+
 
 So any tips?
 
