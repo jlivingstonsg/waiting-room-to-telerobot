@@ -27,8 +27,9 @@ http://robot1.gamereality.se/index.php
 
 I have set the game time to 10 minuts.
 
-I tried to set up the code on github pages here.
-https://jlivingstonsg.github.io/waiting-room-to-telerobot/
+I tried to set up the code on github pages here.  <br>
+https://jlivingstonsg.github.io/waiting-room-to-telerobot/  <br>
+But github pages do not work with php files
 
 
 So any tips?
